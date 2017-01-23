@@ -1,5 +1,6 @@
 package com.codepath.simpletodo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> aTodoAdaptor;
     ListView lvItems;
     EditText editText;
+    private final int EDIT_ITEM_REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,14 @@ public class MainActivity extends AppCompatActivity {
         lvItems = (ListView) findViewById(R.id.lvItems);
         lvItems.setAdapter(aTodoAdaptor);
         editText = (EditText) findViewById(R.id.etEditText);
+        lvItems.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // create an intent and pass on the position and text
+                String textToEdit = (String)parent.getItemAtPosition(position);
+                launchEditItemView(position, textToEdit);
+            }
+        });
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id){
@@ -70,5 +80,25 @@ public class MainActivity extends AppCompatActivity {
         aTodoAdaptor.add(editText.getText().toString());
         editText.setText("");
         writeItems();
+    }
+
+    public void launchEditItemView(int position, String textToEdit) {
+        Intent editItemIntent = new Intent(this, EditItemActivity.class);
+        editItemIntent.putExtra("position", position);
+        editItemIntent.putExtra("textToEdit", textToEdit);
+
+        startActivityForResult(editItemIntent, EDIT_ITEM_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == EDIT_ITEM_REQUEST_CODE) {
+            String newText = data.getExtras().getString("newText");
+            int position = data.getExtras().getInt("position", 0);
+
+            todoItems.set(position, newText);
+            aTodoAdaptor.notifyDataSetChanged();
+            writeItems();
+        }
     }
 }

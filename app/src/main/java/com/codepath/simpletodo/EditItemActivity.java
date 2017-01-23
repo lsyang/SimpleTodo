@@ -1,13 +1,17 @@
 package com.codepath.simpletodo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
 
 public class EditItemActivity extends AppCompatActivity {
+    EditText editItem;
+    int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,19 @@ public class EditItemActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        String textToEdit = getIntent().getStringExtra("textToEdit");
+        position = getIntent().getIntExtra("position", 0);
+        editItem = (EditText) findViewById(R.id.editItem);
+        editItem.setText(textToEdit);
+        editItem.setSelection(textToEdit.length());
     }
 
+    public void onSubmit(View v) {
+        Intent data = new Intent();
+        data.putExtra("newText", editItem.getText().toString());
+        data.putExtra("position", position);
+        setResult(RESULT_OK, data);
+        finish();
+    }
 }
