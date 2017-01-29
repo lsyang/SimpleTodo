@@ -1,6 +1,7 @@
 package com.codepath.simpletodo;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -8,12 +9,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import com.google.gson.Gson;
 
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+
+import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,12 +21,18 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> aTodoAdaptor;
     ListView lvItems;
     EditText editText;
+    SQLiteDatabase db;
+    Gson gson = new Gson();
     private final int EDIT_ITEM_REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Database dbHelper = new Database(this);
+        db = dbHelper.getWritableDatabase();
+
         populateArrayItems();
         lvItems = (ListView) findViewById(R.id.lvItems);
         lvItems.setAdapter(aTodoAdaptor);
@@ -57,23 +63,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readItems() {
-        File filesDir = getFilesDir();
-        File file = new File(filesDir, "todo.txt");
-        try {
-            todoItems = new ArrayList<String>(FileUtils.readLines(file));
-        } catch (IOException e) {
-
+        if (cupboard().withDatabase(db).query(Items.class).get()!= null) {
+            Items items = cupboard().withDatabase(db).query(Items.class).get();
+            todoItems = gson.fromJson(items.text, ArrayList.class);
         }
     }
 
     private void writeItems() {
-        File filesDir = getFilesDir();
-        File file = new File(filesDir, "todo.txt");
-        try {
-            FileUtils.writeLines(file, todoItems);
-        } catch (IOException e) {
+        String jsonItems = gson.toJson(todoItems);
+        Items items;
+        if (cupboard().withDatabase(db).query(Items.class).get()!= null) {
+            items = cupboard().withDatabase(db).query(Items.class).get();
+            items.text = jsonItems;
+        } else {
+            items = new Items(jsonItems);
 
         }
+        cupboard().withDatabase(db).put(items);
     }
 
     public void onAddItem(View view){

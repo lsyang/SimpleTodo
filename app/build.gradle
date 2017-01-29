@@ -28,4 +28,6 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'com.android.support:design:25.1.0'
     testCompile 'junit:junit:4.12'
+    compile 'nl.qbusict:cupboard:2.2.0'
+    compile 'com.google.code.gson:gson:2.2.4'
 }
