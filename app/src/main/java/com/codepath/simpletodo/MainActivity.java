@@ -1,28 +1,24 @@
 package com.codepath.simpletodo;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import com.google.gson.Gson;
-
-import java.util.ArrayList;
 
 import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<String> todoItems;
-    ArrayAdapter<String> aTodoAdaptor;
     ListView lvItems;
     EditText editText;
     SQLiteDatabase db;
-    Gson gson = new Gson();
+    Cursor todoCursor;
+    TodoCursorAdapter todoAdapter;
     private final int EDIT_ITEM_REQUEST_CODE = 20;
 
     @Override
@@ -30,62 +26,58 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Database dbHelper = new Database(this);
-        db = dbHelper.getWritableDatabase();
+        Database handler = new Database(this);
+        db = handler.getWritableDatabase();
+        todoCursor = cupboard().withDatabase(db).query(Items.class).getCursor();
 
-        populateArrayItems();
         lvItems = (ListView) findViewById(R.id.lvItems);
-        lvItems.setAdapter(aTodoAdaptor);
+        todoAdapter = new TodoCursorAdapter(this, todoCursor);
+        lvItems.setAdapter(todoAdapter);
+
         editText = (EditText) findViewById(R.id.etEditText);
+
         lvItems.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // create an intent and pass on the position and text
-                String textToEdit = (String)parent.getItemAtPosition(position);
-                launchEditItemView(position, textToEdit);
+            // create an intent and pass on the position and text
+            String textToEdit = todoCursor.getString(todoCursor.getColumnIndexOrThrow("body"));
+            launchEditItemView(position, textToEdit);
             }
         });
+
         lvItems.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id){
-                todoItems.remove(position);
-                aTodoAdaptor.notifyDataSetChanged();
-                writeItems();
+                Items item = getItem();
+                cupboard().withDatabase(db).delete(item);
+
+                reloadView();
                 return true;
             }
         });
     }
 
-    public void populateArrayItems(){
-        todoItems = new ArrayList<String>();
-        readItems();
-        aTodoAdaptor = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, todoItems);
+    private Items getItem(){
+        Long index = todoCursor.getLong(todoCursor.getColumnIndexOrThrow("_id"));
+        return cupboard().withDatabase(db).get(Items.class, index);
     }
 
-    private void readItems() {
-        if (cupboard().withDatabase(db).query(Items.class).get()!= null) {
-            Items items = cupboard().withDatabase(db).query(Items.class).get();
-            todoItems = gson.fromJson(items.text, ArrayList.class);
-        }
+    private void writeItems(String body, int priority) {
+        Items item = new Items(body, priority);
+        cupboard().withDatabase(db).put(item);
+        reloadView();
     }
 
-    private void writeItems() {
-        String jsonItems = gson.toJson(todoItems);
-        Items items;
-        if (cupboard().withDatabase(db).query(Items.class).get()!= null) {
-            items = cupboard().withDatabase(db).query(Items.class).get();
-            items.text = jsonItems;
-        } else {
-            items = new Items(jsonItems);
-
-        }
-        cupboard().withDatabase(db).put(items);
+    public void reloadView(){
+        todoCursor = cupboard().withDatabase(db).query(Items.class).getCursor();
+        todoAdapter.changeCursor(todoCursor);
     }
 
     public void onAddItem(View view){
-        aTodoAdaptor.add(editText.getText().toString());
+        String body = editText.getText().toString();
         editText.setText("");
-        writeItems();
+        // TODO: take in priorty as well
+        writeItems(body, 2);
     }
 
     public void launchEditItemView(int position, String textToEdit) {
@@ -102,9 +94,11 @@ public class MainActivity extends AppCompatActivity {
             String newText = data.getExtras().getString("newText");
             int position = data.getExtras().getInt("position", 0);
 
-            todoItems.set(position, newText);
-            aTodoAdaptor.notifyDataSetChanged();
-            writeItems();
+            Items item = getItem();
+            item.setBody(newText);
+            cupboard().withDatabase(db).put(item);
+            reloadView();
+
         }
     }
 }
