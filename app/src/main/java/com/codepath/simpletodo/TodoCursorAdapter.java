@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class TodoCursorAdapter extends CursorAdapter {
     public TodoCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
@@ -30,8 +33,16 @@ public class TodoCursorAdapter extends CursorAdapter {
         // Extract properties from cursor
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         int priority = cursor.getInt(cursor.getColumnIndexOrThrow("priority"));
+
+        int year = cursor.getInt(cursor.getColumnIndexOrThrow("year"));
+        int month = cursor.getInt(cursor.getColumnIndexOrThrow("month"));
+        int day = cursor.getInt(cursor.getColumnIndexOrThrow("day"));
+
+        SimpleDateFormat outputFmt = new SimpleDateFormat("MM/dd/yyyy");
+        String currentDateTimeString = outputFmt.format(new Date(year - 1900, month, day));
+
         // Populate fields with extracted properties
         tvBody.setText(body);
-        tvPriority.setText(String.valueOf(priority));
+        tvPriority.setText(currentDateTimeString);
     }
 }

@@ -41,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             // create an intent and pass on the position and text
             String textToEdit = todoCursor.getString(todoCursor.getColumnIndexOrThrow("body"));
-            launchEditItemView(position, textToEdit);
+            int year = todoCursor.getInt(todoCursor.getColumnIndexOrThrow("year"));
+                int month = todoCursor.getInt(todoCursor.getColumnIndexOrThrow("month"));
+                int day = todoCursor.getInt(todoCursor.getColumnIndexOrThrow("day"));
+                launchEditItemView(position, textToEdit, year, month, day);
             }
         });
 
@@ -80,10 +83,13 @@ public class MainActivity extends AppCompatActivity {
         writeItems(body, 2);
     }
 
-    public void launchEditItemView(int position, String textToEdit) {
+    public void launchEditItemView(int position, String textToEdit, int year, int month, int day) {
         Intent editItemIntent = new Intent(this, EditItemActivity.class);
         editItemIntent.putExtra("position", position);
         editItemIntent.putExtra("textToEdit", textToEdit);
+        editItemIntent.putExtra("year", year);
+        editItemIntent.putExtra("month", month);
+        editItemIntent.putExtra("day", day);
 
         startActivityForResult(editItemIntent, EDIT_ITEM_REQUEST_CODE);
     }
@@ -92,10 +98,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == EDIT_ITEM_REQUEST_CODE) {
             String newText = data.getExtras().getString("newText");
-            int position = data.getExtras().getInt("position", 0);
+            int year = data.getExtras().getInt("year", 0);
+            int month = data.getExtras().getInt("month", 0);
+            int day = data.getExtras().getInt("day", 0);
 
             Items item = getItem();
             item.setBody(newText);
+            item.setDate(year, month, day);
             cupboard().withDatabase(db).put(item);
             reloadView();
 
