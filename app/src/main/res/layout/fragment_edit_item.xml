@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TableLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:stretchColumns="1"
+                 android:padding="10dip">
+
+        <TableRow android:paddingBottom="50dip">
+            <TextView
+                android:id="@+id/lbl_title"
+                android:text="Title"/>
+            <EditText
+                android:id="@+id/txt_title"
+                android:inputType="text"
+                android:imeOptions="actionDone"/>
+        </TableRow>
+
+        <TableRow android:paddingBottom="50dip">
+            <TextView
+                android:text="Due Date 2/17/17 "
+                android:id="@+id/txt_due_date"
+                android:layout_weight="0.06"/>
+            <Button
+                android:text="Change due date"
+                android:id="@+id/edit_date"/>
+        </TableRow>
+
+        <TableRow android:paddingBottom="50dip">
+            <TextView
+                android:id="@+id/lbl_pirority"
+                android:text="Pirority"/>
+            <EditText
+                android:id="@+id/txt_pirority"
+                android:inputType="text"
+                android:imeOptions="actionDone"/>
+        </TableRow>
+
+        <TableRow android:paddingBottom="50dip">
+            <Button
+                android:text="Cancel"
+                android:id="@+id/edit_cancel"
+                android:layout_weight="0.1"
+                android:padding="30dip"/>
+            <Button
+                android:text="Save"
+                android:id="@+id/edit_save"
+                android:layout_weight="0.1"
+                android:padding="30dip"/>
+        </TableRow>
+    </TableLayout>
+</ScrollView>

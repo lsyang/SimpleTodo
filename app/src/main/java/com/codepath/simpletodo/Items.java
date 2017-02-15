@@ -45,4 +45,8 @@ public class Items {
         this.day = calendar.get(Calendar.DAY_OF_MONTH);
     }
 
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
 }

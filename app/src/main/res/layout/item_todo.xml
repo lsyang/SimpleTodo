@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="horizontal" >
+              android:orientation="vertical" >
+
     <TextView
         android:id="@+id/tvBody"
         android:layout_width="wrap_content"
@@ -10,13 +11,12 @@
         android:text="cursors"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+
     <TextView
         android:id="@+id/tvDueDate"
-        android:gravity="right"
-        android:textAlignment="gravity"
         android:layout_width = "match_parent"
         android:layout_height= "wrap_content"
-        android:layout_marginLeft="100dp"
-        android:text="3"
+        android:paddingTop="5dip"
+        android:paddingBottom="10dip"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 </LinearLayout>

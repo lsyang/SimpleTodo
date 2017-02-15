@@ -47,7 +47,6 @@ public class EditItemActivity extends AppCompatActivity implements DatePickerDia
         month = getIntent().getIntExtra("month", 0);
         day = getIntent().getIntExtra("day", 0);
         displayDueDate(year, month, day);
-
     }
 
     public void onSubmit(View v) {
@@ -80,4 +79,5 @@ public class EditItemActivity extends AppCompatActivity implements DatePickerDia
         editDueDate = (EditText) findViewById(R.id.editDueDate);
         editDueDate.setText(currentDateTimeString);
     }
+
 }
