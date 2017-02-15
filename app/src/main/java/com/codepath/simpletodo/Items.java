@@ -28,6 +28,12 @@ public class Items {
         setToCurrentDate();
     }
 
+    public Items(String body, int priority, int year, int month, int day) {
+        this.body = body;
+        this.priority = priority;
+        setDate(year, month, day);
+    }
+
     public void setBody(String body){
         this.body = body;
     }

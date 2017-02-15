@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import com.codepath.simpletodo.EditItemFragment.EditNameDialogListener;
@@ -17,11 +16,9 @@ import static nl.qbusict.cupboard.CupboardFactory.cupboard;
 public class MainActivity extends AppCompatActivity implements EditNameDialogListener {
 
     ListView lvItems;
-    EditText editText;
     SQLiteDatabase db;
     Cursor todoCursor;
     TodoCursorAdapter todoAdapter;
-    private final int EDIT_ITEM_REQUEST_CODE = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +33,6 @@ public class MainActivity extends AppCompatActivity implements EditNameDialogLis
         todoAdapter = new TodoCursorAdapter(this, todoCursor);
         lvItems.setAdapter(todoAdapter);
 
-        editText = (EditText) findViewById(R.id.etEditText);
-
         lvItems.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -48,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements EditNameDialogLis
                 int month = todoCursor.getInt(todoCursor.getColumnIndexOrThrow("month"));
                 int day = todoCursor.getInt(todoCursor.getColumnIndexOrThrow("day"));
                 int priority = todoCursor.getInt(todoCursor.getColumnIndexOrThrow("priority"));
-                showEditDialog(textToEdit, year, month, day, priority);
+                showEditDialog(false, textToEdit, year, month, day, priority);
             }
         });
 
@@ -65,9 +60,9 @@ public class MainActivity extends AppCompatActivity implements EditNameDialogLis
 
     }
 
-    private void showEditDialog(String title, int year, int month, int day, int priority){
+    private void showEditDialog(Boolean isNew, String title, int year, int month, int day, int priority){
         FragmentManager fm = getSupportFragmentManager();
-        EditItemFragment editItemFragment = EditItemFragment.newInstance(title, year, month, day, priority);
+        EditItemFragment editItemFragment = EditItemFragment.newInstance(isNew, title, year, month, day, priority);
         editItemFragment.show(fm, "fragment_edit_name");
     }
 
@@ -76,8 +71,8 @@ public class MainActivity extends AppCompatActivity implements EditNameDialogLis
         return cupboard().withDatabase(db).get(Items.class, index);
     }
 
-    private void writeItems(String body, int priority) {
-        Items item = new Items(body, priority);
+    private void writeItems(String body, int year, int month, int day, int priority) {
+        Items item = new Items(body, priority, year, month, day);
         cupboard().withDatabase(db).put(item);
         reloadView();
     }
@@ -88,19 +83,20 @@ public class MainActivity extends AppCompatActivity implements EditNameDialogLis
     }
 
     public void onAddItem(View view){
-        String body = editText.getText().toString();
-        editText.setText("");
-        // TODO: take in priorty as well
-        writeItems(body, 2);
+        showEditDialog(true, "", 2017, 01, 01, 2);
     }
 
     @Override
-    public void onFinishEditDialog(String title, int year, int month, int day, int priority) {
-        Items item = getItem();
-        item.setBody(title);
-        item.setDate(year, month, day);
-        item.setPriority(priority);
-        cupboard().withDatabase(db).put(item);
-        reloadView();
+    public void onFinishEditDialog(Boolean isNew, String title, int year, int month, int day, int priority) {
+        if (isNew) {
+            writeItems(title, year, month, day, priority);
+        } else {
+            Items item = getItem();
+            item.setBody(title);
+            item.setDate(year, month, day);
+            item.setPriority(priority);
+            cupboard().withDatabase(db).put(item);
+            reloadView();
+        }
     }
 }

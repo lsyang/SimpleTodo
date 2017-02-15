@@ -25,6 +25,7 @@ public class TodoCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         TextView tvBody = (TextView) view.findViewById(R.id.tvBody);
         TextView tvDueDate = (TextView) view.findViewById(R.id.tvDueDate);
+        TextView tvPriority = (TextView) view.findViewById(R.id.tvPriority);
 
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         int priority = cursor.getInt(cursor.getColumnIndexOrThrow("priority"));
@@ -38,5 +39,6 @@ public class TodoCursorAdapter extends CursorAdapter {
 
         tvBody.setText(body);
         tvDueDate.setText(currentDateTimeString);
+        tvPriority.setText("Priority: " + String.valueOf(priority));
     }
 }

@@ -28,6 +28,7 @@ public class EditItemFragment extends DialogFragment implements DatePickerDialog
     private Button cancelBtn;
     private Button changeDateBtn;
 
+    private boolean isNew;
     private String title;
     private int year;
     private int month;
@@ -35,22 +36,23 @@ public class EditItemFragment extends DialogFragment implements DatePickerDialog
     private int priority;
 
     public interface EditNameDialogListener {
-        void onFinishEditDialog(String title, int year, int month, int day, int priority);
+        void onFinishEditDialog(Boolean isNew, String title, int year, int month, int day, int priority);
     }
 
 
     public EditItemFragment(){
     }
 
-    public static EditItemFragment newInstance(String title, int year, int month, int day, int priority){
+    public static EditItemFragment newInstance(Boolean isNew, String title, int year, int month, int day, int priority){
         EditItemFragment frag = new EditItemFragment();
         Bundle args = new Bundle();
+        args.putBoolean("isNew", isNew);
         args.putString("header", "Edit Item");
         args.putString("title", title);
         args.putInt("year", year);
         args.putInt("month", month);
         args.putInt("day", day);
-        args.putInt("pirority", priority);
+        args.putInt("priority", priority);
         frag.setArguments(args);
         return frag;
     }
@@ -71,6 +73,7 @@ public class EditItemFragment extends DialogFragment implements DatePickerDialog
         cancelBtn = (Button) view.findViewById(R.id.edit_cancel);
         changeDateBtn = (Button) view.findViewById(R.id.edit_date);
 
+        isNew = getArguments().getBoolean("isNew", true);
         String header = getArguments().getString("header", "");
         title = getArguments().getString("title", "");
         year = getArguments().getInt("year", 2017);
@@ -143,10 +146,10 @@ public class EditItemFragment extends DialogFragment implements DatePickerDialog
 
     public void onSave() {
         title = mEditTitle.getText().toString();
-        //priority = mEditPriority.getText().toInt
+        priority = Integer.parseInt(mEditPriority.getText().toString());
 
         EditNameDialogListener listener = (EditNameDialogListener) getActivity();
-        listener.onFinishEditDialog(title, year, month, day, priority);
+        listener.onFinishEditDialog(isNew, title, year, month, day, priority);
         dismiss();
     }
 
