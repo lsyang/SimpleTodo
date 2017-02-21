@@ -6,7 +6,10 @@
 
     <color name="dark_blue">#180065</color>
     <color name="light_blue">#334ee9ff</color>
-    <color name="medium_green">#3d853e</color>
-    <color name="light_green">#3c2ae668</color>
+
+    <color name="priority_0">#fc6237</color>
+    <color name="priority_1">#ff8360</color>
+    <color name="priority_2">#ff9375</color>
+    <color name="priority_3">#fcbba9</color>
 
 </resources>

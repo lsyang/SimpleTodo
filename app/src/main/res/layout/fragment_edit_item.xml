@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <TableLayout
                  android:layout_width="match_parent"
                  android:layout_height="match_parent"
@@ -32,11 +33,12 @@
         <TableRow android:paddingBottom="50dip">
             <TextView
                 android:id="@+id/lbl_pirority"
-                android:text="Pirority"/>
-            <EditText
-                android:id="@+id/txt_pirority"
-                android:inputType="text"
-                android:imeOptions="actionDone"/>
+                android:text="Priority"/>
+
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_priority"/>
         </TableRow>
 
         <TableRow android:paddingBottom="50dip">

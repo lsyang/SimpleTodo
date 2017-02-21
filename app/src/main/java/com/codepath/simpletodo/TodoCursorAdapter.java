@@ -2,6 +2,7 @@ package com.codepath.simpletodo;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ public class TodoCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         TextView tvBody = (TextView) view.findViewById(R.id.tvBody);
         TextView tvDueDate = (TextView) view.findViewById(R.id.tvDueDate);
-        TextView tvPriority = (TextView) view.findViewById(R.id.tvPriority);
 
         String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
         int priority = cursor.getInt(cursor.getColumnIndexOrThrow("priority"));
@@ -38,7 +38,17 @@ public class TodoCursorAdapter extends CursorAdapter {
         String currentDateTimeString = outputFmt.format(new Date(year - 1900, month, day));
 
         tvBody.setText(body);
-        tvDueDate.setText(currentDateTimeString);
-        tvPriority.setText("Priority: " + String.valueOf(priority));
+        tvDueDate.setText("Due Date: " + currentDateTimeString);
+        int color = 0;
+        switch (priority){
+            case 0: color = ContextCompat.getColor(context, R.color.priority_0);
+                break;
+            case 1: color = ContextCompat.getColor(context, R.color.priority_1);
+                break;
+            case 2: color = ContextCompat.getColor(context, R.color.priority_2);
+                break;
+            case 3: color = ContextCompat.getColor(context, R.color.priority_3);
+        }
+        view.setBackgroundColor(color);
     }
 }

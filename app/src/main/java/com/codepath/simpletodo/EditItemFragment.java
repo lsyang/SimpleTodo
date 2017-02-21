@@ -10,20 +10,24 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class EditItemFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
-    // TODO: make mEditPriority into dropdown
+public class EditItemFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener,
+        OnItemSelectedListener {
     private EditText mEditTitle;
     private TextView mEditDueDate;
-    private EditText mEditPriority;
+    private Spinner mEditPriority;
     private Button saveBtn;
     private Button cancelBtn;
     private Button changeDateBtn;
@@ -68,10 +72,16 @@ public class EditItemFragment extends DialogFragment implements DatePickerDialog
         super.onViewCreated(view, savedInstaceState);
         mEditTitle = (EditText) view.findViewById(R.id.txt_title);
         mEditDueDate = (TextView) view.findViewById(R.id.txt_due_date);
-        mEditPriority = (EditText) view.findViewById(R.id.txt_pirority);
+        mEditPriority = (Spinner) view.findViewById(R.id.txt_priority);
         saveBtn = (Button) view.findViewById(R.id.edit_save);
         cancelBtn = (Button) view.findViewById(R.id.edit_cancel);
         changeDateBtn = (Button) view.findViewById(R.id.edit_date);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this.getContext(),
+                R.array.txt_priority, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mEditPriority.setOnItemSelectedListener(this);
+        mEditPriority.setAdapter(adapter);
 
         isNew = getArguments().getBoolean("isNew", true);
         String header = getArguments().getString("header", "");
@@ -79,14 +89,15 @@ public class EditItemFragment extends DialogFragment implements DatePickerDialog
         year = getArguments().getInt("year", 2017);
         month = getArguments().getInt("month", 01);
         day = getArguments().getInt("day", 01);
-        priority = getArguments().getInt("priority", 1);
+        priority = getArguments().getInt("priority", 0);
 
 
         getDialog().setTitle(header);
         mEditTitle.setText(title);
         mEditTitle.setSelection(title.length());
         displayDueDate();
-        mEditPriority.setText(String.valueOf(priority));
+        int spinnerPosition = adapter.getPosition(String.valueOf(priority));
+        mEditPriority.setSelection(spinnerPosition);
 
         saveBtn.setOnClickListener(new OnClickListener()
         {
@@ -146,7 +157,6 @@ public class EditItemFragment extends DialogFragment implements DatePickerDialog
 
     public void onSave() {
         title = mEditTitle.getText().toString();
-        priority = Integer.parseInt(mEditPriority.getText().toString());
 
         EditNameDialogListener listener = (EditNameDialogListener) getActivity();
         listener.onFinishEditDialog(isNew, title, year, month, day, priority);
@@ -155,5 +165,14 @@ public class EditItemFragment extends DialogFragment implements DatePickerDialog
 
     public void onCancel() {
         dismiss();
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+            int pos, long id) {
+        priority = pos;
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        priority = 0;
     }
 }

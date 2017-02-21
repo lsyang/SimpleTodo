@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
               android:orientation="vertical" >
 
     <TextView
@@ -9,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="cursors"
+        android:paddingTop="10dip"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
 
@@ -17,13 +20,7 @@
         android:layout_width = "match_parent"
         android:layout_height= "wrap_content"
         android:paddingTop="5dip"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/tvPriority"
-        android:layout_width = "match_parent"
-        android:layout_height= "wrap_content"
-        android:paddingTop="5dip"
         android:paddingBottom="10dip"
         android:textAppearance="?android:attr/textAppearanceMedium" />
+
 </LinearLayout>

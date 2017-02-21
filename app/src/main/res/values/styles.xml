@@ -19,7 +19,6 @@
         <item name="android:textColorHighlight">@color/light_blue</item>
         <item name="colorAccent">@color/dark_blue</item>
         <item name="colorControlNormal">@color/dark_blue</item>
-        <!-- Define window properties as desired -->
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowBackground">@android:color/white</item>
@@ -28,12 +27,6 @@
         <item name="android:windowCloseOnTouchOutside">true</item>
     </style>
 
-
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

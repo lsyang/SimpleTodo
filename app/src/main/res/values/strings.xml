@@ -1,8 +1,15 @@
 <resources>
     <string name="app_name">iNote</string>
     <string name="add">ADD ITEM</string>
-    <string name="add_item">Add a new item...</string>
     <string name="title_activity_edit_item">Edit Item</string>
     <string name="btnSaveItem">Save</string>
     <string name="pick_time">Pick Due Date</string>
+    <string name="action_favorite">fav</string>
+
+    <string-array name="txt_priority">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>
